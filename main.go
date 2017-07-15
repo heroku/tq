@@ -44,7 +44,22 @@ func printKey(k, filter string, v interface{}) {
 		return
 	}
 	if filter == k {
-		fmt.Printf("%s\n", v)
+		switch t := v.(type) {
+		case string:
+			fmt.Printf("%s\n", t)
+		case int, int32, int64, uint, uint8, uint16, uint32, uint64:
+			fmt.Printf("%d\n", t)
+		case float32, float64:
+			fmt.Printf("%f\n", t)
+		case bool:
+			fmt.Printf("%t\n", t)
+		case []interface{}:
+			for i := range t {
+				printKey(k, filter, t[i])
+			}
+		default:
+			fmt.Printf("%s\n", t)
+		}
 	}
 }
 
