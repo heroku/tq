@@ -8,8 +8,5 @@ glv:
 ldflags: glv
 	$(eval LDFLAGS := -ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
 
-ver: glv
-	$(eval VERSION := $(shell echo ${GO_LINKER_VALUE} | sed s/^v//))
-
-build: glv ldflags ver
-	GOOS=${GOOS} GOARCH=${GOARCH} go build ${LDFLAGS} -v -o tq-${VERSION}-${GOOS}-${GOARCH}
+build: ldflags
+	GOOS=${GOOS} GOARCH=${GOARCH} go build ${LDFLAGS} -v -o tq-${GO_LINKER_VALUE}-${GOOS}-${GOARCH}

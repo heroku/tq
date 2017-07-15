@@ -4,7 +4,7 @@ go:
 - 1.8.3
 before_deploy:
 - make build
-- export VERSION=$(git describe --tags --always | sed s/^v//)
+- export VERSION=$(git describe --tags --always)
 deploy:
   skip_cleanup: true
   provider: releases
