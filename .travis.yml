@@ -1,0 +1,16 @@
+language: go
+sudo: required
+go:
+- 1.8.3
+before_deploy:
+- make build
+- export VERSION=$(git describe --tags --always | sed s/^v//)
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: L/T5TtCgRkinwjWtjKvdCd8iFT6GkeifviK9L5cjGyM2GRyHOIyuY5C3vhHZwkbF8tH+Ia7Z18aBcpiXHtm12M8a3LM0kZ52cecvMOVPKKrQcEs5QExfPQXHgRcIlXXvJGpqgH1QFZeWvBEBV4aFyQGbJWuQFU87i4c7LHyR5scBwO+9VMw4jlnfRn2y7T8gwhHO2QprdTEfTaCzsr/SEfbj0FgCQhBH23Zcd7vmKcfVm0boCTIMT7M41me7ElokZ1N1cF5WzdpagxAN6l2Z9lfDUl7LT1sUp4RSCbRVhPa4xpJfa7MJM1rCaAJVOyXYYYgQEAjOB5/MyOsk/sDNqSJu3pwOd54veBrB1UuoTMKKNujHBvqlSjmFllZ0SjzGJZ3JU/sqQ6vMUjwLC36qZdkuq9BKSdQXEpMs5CCLd8+N1lqBTGMk1gWzL4WeoVY4cGJNLi9W9lEUofq9xT2yHBU3WbADHW85aOq27qOQSaaCV7SA69p4LKbXaoPtMYgtwgrPGFmgfxJ+ITbmQgDhXe+04iwu+6B6MUD/FneD2cER64B8pQrlftb3P52lhhcRxn20zHe1EfOa7Yd5y0CHrEbPJbtHBG2XePPAR8ksmNlPi0CzFSLBRolIEbbLm+KgCPnLhV+IVvivsBNRIpUQ1U2cmVhiZzadtftqig5B6OM=
+  file: tq-${VERSION}-linux-amd64
+  on:
+    tags: true
+    repo: heroku/tq
