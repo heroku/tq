@@ -13,10 +13,6 @@ const (
 	version = "unknown"
 )
 
-var (
-	keyFilter = flag.String("key", "", "Single key to filter on")
-)
-
 func handleArgs() string {
 	flag.Parse()
 
@@ -30,42 +26,33 @@ func handleArgs() string {
 		fmt.Println()
 		fmt.Println("<query> : see https://godoc.org/github.com/pelletier/go-toml/query for docs")
 		fmt.Println()
-		fmt.Println("options:")
-		flag.PrintDefaults()
-		fmt.Println()
 		os.Exit(2)
 	}
 	return args[0]
 }
 
-func printKey(k, filter string, v interface{}) {
-	if filter == "" {
-		fmt.Printf("%s = %q\n", k, v)
-		return
-	}
-	if filter == k {
-		switch t := v.(type) {
-		case string:
-			fmt.Printf("%s\n", t)
-		case int, int32, int64, uint, uint8, uint16, uint32, uint64:
-			fmt.Printf("%d\n", t)
-		case float32, float64:
-			fmt.Printf("%f\n", t)
-		case bool:
-			fmt.Printf("%t\n", t)
-		case []interface{}:
-			for i := range t {
-				printKey(k, filter, t[i])
-			}
-		default:
-			fmt.Printf("%s\n", t)
+func printKey(v interface{}) {
+	switch t := v.(type) {
+	case string:
+		fmt.Printf("%s\n", t)
+	case int, int32, int64, uint, uint8, uint16, uint32, uint64:
+		fmt.Printf("%d\n", t)
+	case float32, float64:
+		fmt.Printf("%f\n", t)
+	case bool:
+		fmt.Printf("%t\n", t)
+	case []interface{}:
+		for i := range t {
+			printKey(t[i])
 		}
+	default:
+		fmt.Printf("%s\n", t)
 	}
 }
 
-func printTree(t *toml.Tree, filter string) {
+func printTree(t *toml.Tree) {
 	for _, k := range t.Keys() {
-		printKey(k, filter, t.Get(k))
+		printKey(t.Get(k))
 	}
 }
 
@@ -83,12 +70,12 @@ func main() {
 		fmt.Printf("Error: %T - %s", err, err)
 		os.Exit(1)
 	}
-	for i, v := range result.Values() {
+	for _, v := range result.Values() {
 		switch t := v.(type) {
 		case *toml.Tree:
-			printTree(t, *keyFilter)
+			printTree(t)
 		default:
-			fmt.Printf("default: %d, %T, %s", i, t, t)
+			printKey(v)
 		}
 	}
 }
